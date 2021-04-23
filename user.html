@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src=" https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.4/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $("button").click(function(){
+                $.ajax({
+                    method: "GET",
+                    url: "/now",
+                    success: function(data,state,xhr){
+                    //connect success,get 2xx status
+                    //alert(data);
+                    $("h1").text(data);
+                    },
+                    error: function(xhr, state, error){
+                    //connect error,get 4xx or 5xx  status
+                    alert("Error, Please try again");
+                    }
+                });
+            });
+            
+        });
+    </script>
+
+</head>
+
+
+<body>
+    <div class="container">
+        <h1>Current Time</h1>
+        <button class="btn btn-primary">Get time</button>
+    </div>
+</body>
+</html>

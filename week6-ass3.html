@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6 Ass 3</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+
+    <script>
+
+        var userInfo = {};
+        if (localStorage.userInfo != undefined) {
+            userInfo = JSON.parse(localStorage.userInfo);
+        } else {
+            userInfo = {name: "Taylor", isMale: false };
+        }
+       
+        $(document).ready(function () {
+            showInfo();
+            $("#btn").click(function () {
+
+                if ($(this).val() == "Edit") {
+                    disableInput(false);
+                    $(this).val("Save");
+
+                } else if ($(this).val() == "Save") {
+                    saveInput();
+                    disableInput(true);
+                    $(this).val("Edit");
+                }
+            });
+        });
+
+        function saveInput() {
+            userInfo.name = $("#name").val();
+            userInfo.isMale = (function() {
+                return $("input[value='male']").is(":checked") ? true : false;
+            })();
+
+            localStorage.userInfo = JSON.stringify(userInfo);
+        }
+
+        function disableInput(bool) {
+            $("#name").prop("disabled", bool);
+            $("input[value='male']").prop("disabled", bool);
+            $("input[value='female']").prop("disabled", bool);
+        }
+
+        function showInfo() {
+            $("#name").val(userInfo.name);
+            if (userInfo.isMale) {
+                $("input[value='male']").prop("checked", true);
+            } else {
+                $("input[value='female']").prop("checked", true);
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>
+            User information
+        </h1>
+        <input type="text" class="form-control my-2" value="" id="name" disabled>
+        <input type="radio" name="gender" value="male" disabled> Male
+        <input type="radio" name="gender" value="female" disabled> Female <br>
+        <input type="button" class="btn btn-primary my-3" value="Edit" id="btn">
+    </div>
+</body>
+
+</html>

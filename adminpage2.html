@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+
+        <script>
+            $(document).ready(function () {
+                
+    
+                $("#btnsignout").click(function () {
+                    window.location.replace("adminpage1.html");
+                });
+
+                $("#btnManageUser").click(function () {
+                    window.location.replace("adminpage3.html");
+                });
+                $("#btnManagePlant").click(function () {
+                    window.location.replace("adminpage4.html");
+                });
+                $("#btnManageLivestock").click(function () {
+                    window.location.replace("adminpage5.html");
+                });
+            });
+        </script>
+
+    
+</head>
+
+<body>
+    <div class="container text-center">
+        <input type="button" class="btn btn-primary my-2" id="btnManageUser" value="Manage User"><p>
+        <input type="button" class="btn btn-primary my-2" id="btnManagePlant" value="Manage Plant"><p>
+        <input type="button" class="btn btn-primary my-2" id="btnManageLivestock" value="Manage Livestock"><p>
+        <input type="button" class="btn btn-outline-danger" id="btnsignout"value="Sign Out"><p></p>
+
+    </div>
+</body>
+
+</html>

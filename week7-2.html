@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="../public/styles/bootstrap.min.css">
+    <script src="../public/script/jquery-3.5.1.min.js"></script>
+    <script src="../public/script/popper.min.js"></script>
+    <script src="../public/script/bootstrap.min.js"></script>
+    <script src="../public/script/highcharts.js"></script>
+
+    <script>
+        $(document).ready(function (){
+            //data
+            //const month = ['Jan','Fed','Mar','Apr'];
+            //const visitor = [80,60,44,75];
+            const visitor =[
+                {"year": "2020","data": [80,60,44,75]}
+            ];
+
+            const json ='[{"year": "2020","data": [80,60,44,75]}]';
+
+            const visitors =JSON.parse(json);
+
+            //chart
+            var mychart = Highcharts.chart("mychart",{ 
+                chart: { type: 'line'},
+                series:[{ name: visitors[0].year, data:
+                visitors[0].data}]
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container-fluid pt-3">
+        <div id="mychart" style="width: 100%;"></div>
+    </div>
+</body>
+</html>

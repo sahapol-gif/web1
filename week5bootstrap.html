@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bootstrap 4 Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+	<link href="../public/styles/style.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://m.w3newbie.com/you-tube.css">
+    
+    <script>
+        $(document).ready(function(){
+            $("#btnClick").click(function(){
+                let Username = $("#txtUsername").val();
+                let Password = $("#txtPassword").val();
+                var gender = $("input[name='gender']:checked").val();
+                var skill = $("input[name='skill']:checked")
+                var Skill = " ";
+                for (var i=0; i< skill.length; i++) {
+                    Skill = Skill + skill[i].value + "\n ";
+                }
+                var stdYear = $("#selectYear").val();
+                var add = $("#txtAddress").val();
+                alert("Username: " + Username + "     \n" + 
+                "Password: " + Password + "\n" + 
+                "Gender: "+ gender  + "\n" + 
+                "Skill: "+ Skill + "\n" + 
+                "Students Year: "+ stdYear + "\n" + 
+                "Address: "+ add );
+            })
+        })
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h3>Registration</h3>
+
+        <div class="form-group">
+            Username
+            <input type="text" class="form-control" id="txtUsername" />
+            Password
+            <input type="password" class="form-control" id="txtPassword" />
+        </div>
+
+        <div class="form-group">
+            <div class="form-check-inline">
+                <input type="radio" class="form-check-input" name="gender" value="male" />Male
+            </div>
+            <div class="form-check-inline">
+                <input type="radio" class="form-check-input" name="gender" value="female"  />Female
+            </div>
+        </div>
+
+        <div class="form-group">
+            Skill
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="skill" value="Java" />Java
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="skill" value="JavaScript" />JavaScript
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="skill" value="Python" />Python
+            </div>
+        </div>
+
+        <div class="form-group">
+            Student Year
+            <select class="form-control" id="selectYear">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            Address
+            <textarea class="form-control" rows="5" id="txtAddress"></textarea>
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-primary" id="btnClick">Register</button>
+        </div>
+    </div>
+</body>
+
+</html>

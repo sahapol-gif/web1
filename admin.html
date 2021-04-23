@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.6.1/sweetalert2.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.6.1/sweetalert2.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css"
+        integrity="sha512-QmxybGIvkSI8+CGxkt5JAcGOKIzHDqBMs/hdemwisj4EeGLMXxCm9h8YgoCwIvndnuN1NdZxT4pdsesLXSaKaA=="
+        crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.min.js"
+        integrity="sha512-1zzZ0ynR2KXnFskJ1C2s+7TIEewmkB2y+5o/+ahF7mwNj9n3PnzARpqalvtjSbUETwx6yuxP5AJXZCpnjEJkQw=="
+        crossorigin="anonymous"></script>
+
+    <script>
+        var tableUser;
+        var updateRow;
+        var updateData;
+        
+        $(document).ready(function () {
+            tableUser = $("#myTable").DataTable({
+                ajax: {
+                    url: "/users",
+                    dataSrc: function (data) {
+                        for (i in data) {
+                            if (data[i].role == 1) {
+                                data[i].role = "Admin";
+                            } else {
+                                data[i].role = "User";
+                            }
+                        }
+                        return data;
+                    },
+                },
+                columns: [
+                    { data: "id", title: "ID" },
+                    { data: "username", title: "Name" },
+                    { data: "role", title: "Role" },
+                    { title: "Action", defaultContent: `<button class="btn btn-danger btn-delete">Delete</button> <button class="btn btn-warning btn-edit">Edit</button>` }
+                ]
+            });
+
+            $("#myTable tbody").on("click", ".btn-delete", function () {
+                const currentRow = $(this).parents('tr');
+                const data = tableUser.row(currentRow).data();
+
+                Swal.fire({
+                    title: `Are you sure to delete ${data.username} ?`,
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                }).then(function (result){
+                    if (result.isConfirmed) {
+                        // delete user by id
+                        deleteUser(data.id, currentRow);
+                    }
+                });
+
+            });
+
+            function deleteUser(id, currentRow) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/user/" + id,
+                }).done(function (data, state, xhr) {
+                    Swal.fire(data);
+
+                    // Update table
+                    tableUser.row(currentRow).remove().draw(false);
+
+                }).fail(function(xhr, state) {
+                    Swal.fire(xhr.responseText);
+                });
+            }
+
+            $("#btnAddUser").on("click", function() {
+                $("#modalAddUser").modal("show");
+            });
+
+            
+            $("#myTable tbody").on("click", ".btn-edit", function() {
+                $("#modalUpdateUser").modal("show");
+                updateRow = $(this).parents('tr');
+                updateData = tableUser.row(updateRow).data();
+
+                $("#txtUpdateUsername").val(updateData.username);
+                if (updateData.role == 1) {
+                    $("input[value='Admin']").prop("checked", true);
+                } else {
+                    $("input[value='User']").prop("checked", true);
+                }
+            });
+
+            $("#btnSaveUpdateUser").on("click", function () {
+                const updateUser = getUpdateUserInfo();
+                
+                $.ajax({
+                    type: "PUT",
+                    url: "/user/update",
+                    data: updateUser,
+                    success: function (response) {
+                        
+                    }
+                }).done(function (data, state, xhr) {
+                    Swal.fire(`Update user "${updateUser.username}" complete!`);
+                    $("#modalAddUser").modal("hide");
+                    tableUser.ajax.reload();
+                    
+                }).fail(function (xhr, state) {
+                    Swal.fire(xhr.responseText);
+                });
+            });
+
+            $("#btnSaveAddUser").on("click", function () {
+                const newUser = getNewUserInfo();
+                
+                $.ajax({
+                    type: "PUT",
+                    url: "/user/add",
+                    data: newUser,
+                    success: function (response) {
+                        
+                    }
+                }).done(function (data, state, xhr) {
+                    Swal.fire(`Add user "${newUser.username}" complete!`);
+                    $("#modalAddUser").modal("hide");
+                    tableUser.ajax.reload();
+                    
+                }).fail(function (xhr, state) {
+                    Swal.fire(xhr.responseText);
+                });
+            });
+
+            function getNewUserInfo() {
+                const username = $("#txtUsername").val();
+                const password = $("#txtPassword").val();
+                const role = $("input[name='roles']:checked").val();
+                return {"username": username, "password": password, "role": (function () { return role == "Admin" ? 1 : 2})()};
+            }
+
+            function getUpdateUserInfo() {
+                const username = $("#txtUpdateUsername").val();
+                const password = $("#txtUpdatePassword").val();
+                const role = $("input[name='uroles']:checked").val();
+                return {"id": updateData.id,"username": username, "password": password, "role": (function () { return role == "Admin" ? 1 : 2})()};
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>
+            Admin
+        </h1>
+        <div class="mb-2">
+            <a href="/"><button class="btn btn-dark float-left" id="btnSignOut">Sign out</button></a>
+            <button class="btn btn-success float-right" id="btnAddUser">Add User</button>
+           
+        </div>
+        <br><br>
+        
+        
+        <table class="table table-striped table-bordered" id="myTable" style="width: 100%;">
+
+        </table>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="modalAddUser" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add new user</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body">
+                    <label for="#txtUsername">Username</label>
+                    <input type="text" class="form-control mb-2" id="txtUsername">
+                    <label for="#txtPassword">Password</label>
+                    <input type="text" class="form-control mb-2" id="txtPassword">
+
+                    <input type="radio" class="mr-2" name="roles" value="Admin">Admin
+                    <input type="radio" class="mx-2 my-2" name="roles" value="User">User
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="btnSaveAddUser" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalUpdateUser" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update user</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body">
+                    <label for="#txtUsername">Username</label>
+                    <input type="text" class="form-control mb-2" id="txtUpdateUsername">
+                    <label for="#txtPassword">Password</label>
+                    <input type="text" class="form-control mb-2" id="txtUpdatePassword">
+
+                    <input type="radio" class="mr-2" name="uroles" value="Admin">Admin
+                    <input type="radio" class="mx-2 my-2" name="uroles" value="User">User
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="btnSaveUpdateUser" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ManagePlant</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.6.1/sweetalert2.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.6.1/sweetalert2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var rowID;
+            // data
+            var dataSet = [
+                {
+                    "id": "001",
+                    "name": "ข้าวโพด",
+                    "species": "ใบเลี้ยงเดี่ยว",
+                    "purchasePrice": "10บ./กก.",
+                    "sellingPrice": "9.00บ./กก.",
+                    "parenting": "ระยะเวลาเลี้ยง 4 – 5 เดือน/รุ่น",
+                    "water": "ตลอดการปลูก ประมาณ 350-600 มิลลิเมตร สำหรับครั้งแรก 30-40 มิลลิเมตร",
+                    "area": "200 ตารางวาขึ้นไป",
+                    "food": "1. ปุ๋ยรองพื้น ใช้ปุ๋ยสูตร 16-20-0 หรือ 15-15-15 ในปริมาณ 20 กิโลกรัม/ไร่ 2. ปุ๋ยยูเรีย เมื่อข้าวโพดมีอายุ 25-30 วัน โดยใช้ปุ๋ยยูเรีย 46-0-0 ในปริมาณ 20-25 กิโลกรัม/ไร่",
+                }
+            ];
+
+            // data table
+            let table = $("#myTable").DataTable({
+                responsive: true,       //for responsive column display
+                deferRender: true,      //if large data, use this option
+                data: dataSet,
+                columns: [
+                    { data: "id", title: "ID" },
+                    { data: "name", title: "ชื่อ" },
+                    { data: "species", title: "ชนิดพันธุ์" },
+                    { data: "purchasePrice", title: "ราคาซื้อ" },
+                    { data: "sellingPrice", title: "ราคาขาย" },
+                    { data: "water", title: "ปริมาณน้ำที่ใช้" },
+                    { data: "area", title: "พื้นที่ที่ใช้" },
+                    { data: "parenting", title: "ระยะเวลาการเลี้ยงดู" },
+                    { data: "food", title: "ประเภทอาหาร" },
+                    { title: "Action", defaultContent: "<div class='text-center'><button class='btn btn-danger'>Delete</button>  <button class='btn btn-warning'>Edit</button></div>" }
+                ]
+            });
+
+            // Edit function
+            $("#myTable tbody").on("click", ".btn-warning", function () {
+
+                // change modal elements to be accorded to its function 
+                $(".modal-title").html("Edit");
+
+                $("#txtID").prop('disabled', true);
+
+                // get current tr row number
+                let currentRow = $(this).parents("tr");
+
+                // get data from dataTable by sending row info
+                let data = table.row(currentRow).data();
+
+                // get current user's interacting row
+                rowID = table.row(currentRow).index();
+
+                $("#txtID").val(data.id);
+                $("#txtName").val(data.name);
+                if (data.species == "Monocot") {
+                    $("#radMonocot").prop("checked", true);
+                } else {
+                    $("#radDicotyledon").prop("checked", true);
+                }
+                $("#txtPurchasePrice").val(data.purchasePrice);
+                $("#txtSellingPrice").val(data.sellingPrice);
+                $("#txtParenting").val(data.parenting);
+                $("#txtWater").val(data.water);
+                $("#txtArea").val(data.area);
+                $("#txtFood").val(data.food);
+
+                // show modal
+                $("#modalEdit").modal("show");
+
+            });
+
+            // Save button from modal editor
+            $("#btnEditSave").click(function () {
+
+                const name = $("#txtName").val();
+                const species = (function () {
+                    if ($("#radMonocot").is(":checked")) {
+                        return "ใบเลี้ยงเดี่ยว";
+                    } else {
+                        return "ใบเลี้ยงคู่";
+                    }
+                })();
+                const purchasePrice = $("#txtPurchasePrice").val();
+                const sellingPrice = $("#txtSellingPrice").val();
+                const parenting = $("#txtParenting").val();
+                const water = $("#txtWater").val();
+                const area = $("#txtArea").val();
+                const food = $("#txtFood").val();
+
+                dataSet[rowID].name = name;
+                dataSet[rowID].species = species;
+                dataSet[rowID].purchasePrice = purchasePrice;
+                dataSet[rowID].sellingPrice = sellingPrice;
+                dataSet[rowID].parenting = parenting;
+                dataSet[rowID].water = water;
+                dataSet[rowID].area = area;
+                dataSet[rowID].food = food;
+
+                // -------------------------------
+                let temp = table.row(rowID).data();
+                temp.name = name;
+                temp.species = species;
+                temp.purchasePrice = purchasePrice;
+                temp.sellingPrice = sellingPrice;
+                temp.parenting = parenting;
+                temp.water = water;
+                temp.area = area;
+                temp.food = food;
+                table.row(rowID).data(temp).invalidate();
+
+                // Easier way but not efficient.
+                // table.clear();
+                // table.rows.add(dataSet).draw();
+                // --------------------------------
+
+                //hide modal
+                $("#modalEdit").modal("hide");
+
+            });
+
+            // Delete function
+            $('#myTable tbody').on('click', '.btn-danger', function () {
+
+                // get current row datatables info
+                let currentRow = $(this).parents("tr");
+
+                // get data of the selected row
+                let data = table.row(currentRow).data();
+
+                // get index of interested row
+                let indexToRemove = table.row(currentRow).index();
+
+                // firing sweet alert
+                Swal.fire({
+                    title: 'Warning',
+                    text: "Are you sure to delete " + data.id,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: 'gray'
+
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // remove from list
+                        dataSet.splice(indexToRemove, 1);
+                        // redraw the table
+                        table.row(currentRow).remove().draw();
+
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        );
+                    }
+                }
+                );
+            });
+
+            $("#btnAdd").click(function () {
+
+                // change modal elements to be accorded to its function 
+                $(".modal-title").html("Add");
+
+                $("#txtID_add").val("");
+                $("#txtName_add").val("");
+                $("#radMonocot_add").prop("checked", true);
+                $("#txtPurchasePrice_add").val("");
+                $("#txtSellingPrice_add").val("");
+                $("#txtParenting_add").val("");
+                $("#txtWater_add").val("");
+                $("#txtArea_add").val("");
+                $("#txtFood_add").val("");
+
+
+                // poor little modal
+                $("#modalAdd").modal("show");
+
+            });
+
+            $("#btnAddSave").click(function () {
+
+                // for performance reason
+                let id = $("#txtID_add").val();
+
+                let foundID = false;
+                for (i in dataSet) {
+                    if (dataSet[i].id == id) {
+                        foundID = true;
+                        break;
+                    }
+                }
+
+                if (id == "" || $("#txtName_add").val() == "") {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Please input atleast ID and name!",
+                        icon: "error"
+                    });
+
+                } else if (foundID) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "This user's ID is already taken!",
+                        icon: "error"
+                    });
+
+                } else {
+
+                    // yes, ikr
+                    dataSet.push({
+                        "id": id,
+                        "name": $("#txtName_add").val(),
+                        "species": $("#radMonocot_add").is(":checked") ? "Monocot" : "ใบเลี้ยงคู่",
+                        "purchasePrice": $("#txtPurchasePrice_add").val(),
+                        "sellingPrice": $("#txtSellingPrice_add").val(),
+                        "parenting": $("#txtParenting_add").val(),
+                        "water": $("#txtWater_add").val(),
+                        "area": $("#txtArea_add").val(),
+                        "food": $("#txtFood_add").val(),
+                    });
+
+                    $("#modalAdd").modal('hide');
+                    table.clear();
+                    table.rows.add(dataSet).draw();
+
+                }
+
+            });
+            $("#btnback").click(function () {
+                    window.location.replace("adminpage2.html");
+                });
+
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid pt-3">
+
+        <h3 class="my-3">Manage Plant</h3>
+        <div class="mb-2" style="text-align: right;">
+            <button class="btn btn-success" id="btnAdd">Add</button>
+        </div>
+
+        <table id="myTable" class="table table-striped table-bordered" style="width: 100%;">
+        </table>
+
+        <!-- Editor Modal -->
+        <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <input type="text" class="form-control mb-2" id="txtID" placeholder="ID" disabled>
+                        <input type="text" class="form-control mb-2" id="txtName" placeholder="Name">
+                        <input type="radio" name="species" id="radMonocot" value="Monocot"> ใบเลี้ยงเดี่ยว
+                        <input type="radio" name="species" id="radDicotyledon" value="Dicotyledon"> ใบเลี้ยงคู่
+                        <input type="text" class="form-control mt-2" id="txtPurchasePrice" placeholder="PurchasePrice">
+                        <input type="text" class="form-control mt-2" id="txtSellingPrice" placeholder="SellingPrice">
+                        <input type="text" class="form-control mt-2" id="txtParenting" placeholder="Parenting">
+                        <input type="text" class="form-control mt-2" id="txtWater" placeholder="Water">
+                        <input type="text" class="form-control mt-2" id="txtArea" placeholder="Area">
+                        <input type="text" class="form-control mt-2" id="txtFood" placeholder="Food">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnEditSave">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Adding Modal -->
+        <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <input type="text" class="form-control mb-2" id="txtID_add" placeholder="ID">
+                        <input type="text" class="form-control mb-2" id="txtName_add" placeholder="Name">
+                        <input type="radio" name="species" id="radMonocot_add" value="Monocot"> ใบเลี้ยงเดี่ยว
+                        <input type="radio" name="species" id="radDicotyledon_add" value="Dicotyledon"> ใบเลี้ยงคู่
+                        <input type="text" class="form-control mt-2" id="txtPurchasePrice_add" placeholder="PurchasePrice">
+                        <input type="text" class="form-control mt-2" id="txtSellingPrice_add" placeholder="SellingPrice">
+                        <input type="text" class="form-control mt-2" id="txtParenting_add" placeholder="Parenting">
+                        <input type="text" class="form-control mt-2" id="txtWater_add" placeholder="Water">
+                        <input type="text" class="form-control mt-2" id="txtArea_add" placeholder="Area">
+                        <input type="text" class="form-control mt-2" id="txtFood_add" placeholder="Food">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnAddSave">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="button" class="btn btn-outline-primary" id="btnback"value="Back"><p></p>
+
+</body>
+
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage User</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.6.1/sweetalert2.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.6.1/sweetalert2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var rowID;
+            // data
+            var dataSet = [
+                {
+                    "id": "001",
+                    "name": "สหพล พลเยี่ยม",
+                    "username": "Sahapol",
+                    "email": "6231302017@lamduan.mfu.ac.th",
+                    "sellingPrice": "09********",
+                    
+                }
+            ];
+
+            // data table
+            let table = $("#myTable").DataTable({
+                responsive: true,       //for responsive column display
+                deferRender: true,      //if large data, use this option
+                data: dataSet,
+                columns: [
+                    { data: "id", title: "ID" },
+                    { data: "name", title: "ชื่อ-นามสกุล" },
+                    { data: "username", title: "Username" },
+                    { data: "email", title: "E-mail" },
+                    { data: "sellingPrice", title: "Phone" },
+                    { title: "Action", defaultContent: "<div class='text-center'><button class='btn btn-danger'>Delete</button>  <button class='btn btn-warning'>Edit</button></div>" }
+                ]
+            });
+
+            // Edit function
+            $("#myTable tbody").on("click", ".btn-warning", function () {
+
+                // change modal elements to be accorded to its function 
+                $(".modal-title").html("Edit");
+
+                $("#txtID").prop('disabled', true);
+
+                // get current tr row number
+                let currentRow = $(this).parents("tr");
+
+                // get data from dataTable by sending row info
+                let data = table.row(currentRow).data();
+
+                // get current user's interacting row
+                rowID = table.row(currentRow).index();
+
+                $("#txtID").val(data.id);
+                $("#txtName").val(data.name);
+                $("#txtUsername").val(data.username);
+                $("#txtEmail").val(data.email);
+                $("#txtSellingPrice").val(data.sellingPrice);
+
+                // show modal
+                $("#modalEdit").modal("show");
+
+            });
+
+            // Save button from modal editor
+            $("#btnEditSave").click(function () {
+
+                const name = $("#txtName").val();
+                const username = $("#txtUsername").val();
+                const email = $("#txtEmail").val();
+                const sellingPrice = $("#txtSellingPrice").val();
+                
+
+                dataSet[rowID].name = name;
+                dataSet[rowID].username = username;
+                dataSet[rowID].email = email;
+                dataSet[rowID].sellingPrice = sellingPrice;
+                
+
+                // -------------------------------
+                let temp = table.row(rowID).data();
+                temp.name = name;
+                temp.username = username;
+                temp.email = email;
+                temp.sellingPrice = sellingPrice;
+                table.row(rowID).data(temp).invalidate();
+
+                // Easier way but not efficient.
+                // table.clear();
+                // table.rows.add(dataSet).draw();
+                // --------------------------------
+
+                //hide modal
+                $("#modalEdit").modal("hide");
+
+            });
+
+            // Delete function
+            $('#myTable tbody').on('click', '.btn-danger', function () {
+
+                // get current row datatables info
+                let currentRow = $(this).parents("tr");
+
+                // get data of the selected row
+                let data = table.row(currentRow).data();
+
+                // get index of interested row
+                let indexToRemove = table.row(currentRow).index();
+
+                // firing sweet alert
+                Swal.fire({
+                    title: 'Warning',
+                    text: "Are you sure to delete " + data.id,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: 'gray'
+
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // remove from list
+                        dataSet.splice(indexToRemove, 1);
+                        // redraw the table
+                        table.row(currentRow).remove().draw();
+
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        );
+                    }
+                }
+                );
+            });
+
+            $("#btnback").click(function () {
+                    window.location.replace("adminpage2.html");
+                });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid pt-3">
+
+        <h3 class="my-3">Manage User</h3>
+
+        <table id="myTable" class="table table-striped table-bordered" style="width: 100%;">
+        </table>
+
+        <!-- Editor Modal -->
+        <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <input type="text" class="form-control mb-2" id="txtID" placeholder="ID" disabled>
+                        <input type="text" class="form-control mb-2" id="txtName" placeholder="Name">
+                        <input type="text" class="form-control mb-2" id="txtUsername" placeholder="Username">
+                        <input type="text" class="form-control mt-2" id="txtEmail" placeholder="Email">
+                        <input type="text" class="form-control mt-2" id="txtSellingPrice" placeholder="SellingPrice">
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnEditSave">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p></p>
+    <input type="button" class="btn btn-outline-primary" id="btnback"value="Back"><p></p>
+
+</body>
+
+</html>

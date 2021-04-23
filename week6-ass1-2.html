@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6 Ass 1_2</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // From JSON data
+        var antique = '[{"title":"Antique 1","description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","image":"../public/styles/Pictures/p1.jpg","enable":false},{"title":"Antique 2","description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","image":"../public/styles/Pictures/p2.jpg","enable":true},{"title":"Antique 3","description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","image":"../public/styles/Pictures/p3.jpg","enable":true},{"title":"Antique 4","description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","image":"../public/styles/Pictures/p4.jpg","enable":true},{"title":"Antique 5","description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","image":"../public/styles/Pictures/p5.png","enable":true},{"title":"Antique 6","description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","image":"../public/styles/Pictures/p6.jpg","enable":true}]';
+
+        $(document).ready(function () {
+            // parsing string JSON
+            let cabinet = JSON.parse(antique);
+            // for appending data to make cards
+            let where = $("#main");
+
+            // iterate over cabinet
+            for (i in cabinet) {
+                // call makeCard() function to make each card 
+                makeCard(where, {
+                    title: cabinet[i].title,
+                    description: cabinet[i].description,
+                    imagePath: cabinet[i].image,
+                    enableButton: cabinet[i].enable
+                });
+            };
+
+        });
+
+        function makeCard(where, options) {
+            // define card's information
+            let cardTemplate = `<div class="card">
+                                        <img class="card-img-top" src="${options.imagePath}" alt="Card image">
+                                        <div class="card-body text-center">
+                                            <h4 class="card-title">${options.title}</h4>
+                                            <p class="card-text">${options.description}</p>
+                                            ${(function() {
+                                                // a little function to make "More info" button if needed
+                                                return options.enableButton == true ? `<a href="#" class="btn btn-primary">More info</a>` : "";
+                                             })()}
+                                        </div>
+                                    </div>`;
+            
+            // finally put it in the page
+            where.append(cardTemplate);
+
+
+        };
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid my-3">
+        <h1>Cabinet 1</h1>
+        <p>List of all antiques in this cabinet</p>
+        <p>
+            <strong>Note: </strong>
+            Some antiques' details are not ready
+        </p>
+
+        <div id="main" class="card-columns"> 
+            
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../public/styles/bootstrap.min.css">
+    <script src="../public/script/jquery-3.5.1.min.js"></script>
+    <script src="../public/script/popper.min.js"></script>
+    <script src="../public/script/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            //JSON
+            const fruit = '[{"name":"apple"}, {"name":"banana"}, {"name":"orange"}, {"name":"champp"}]';
+            //convert JSON to JS object
+            const fruitObject = JSON.parse(fruit);
+            //alert(fruitObject[0].name);
+
+            let data = "";
+            for(let i=0; i<fruitObject.length; i++) {
+                data += "<option value="+fruitObject[i].name+">"+fruitObject[i].name+"</option>";
+            }
+            $("#fruit").html(data);
+
+            $("button").click(function () { 
+                alert($("#fruit").val());
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <select id="fruit">
+        </select>
+
+        <button class="btn-primary">Show</button>
+    </div>
+</body>
+</html>

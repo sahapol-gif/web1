@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.6.1/sweetalert2.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.6.1/sweetalert2.min.js"></script>
+
+    <style>
+        th.dt-center,
+        td.dt-center {
+            text-align: center;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            // variable to keep the selected row index
+            var rowID;
+            var ArrayID;
+            const dataSet = [
+                {
+                    "id": "6231302001",
+                    "name": "Ethan Hunt",
+                    "gender": "Male",
+                    "major": "CS",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302002",
+                    "name": "Lara Croft",
+                    "gender": "Female",
+                    "major": "ICE",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302003",
+                    "name": "Tom Hank",
+                    "gender": "Male",
+                    "major": "CS",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302004",
+                    "name": "Michael Jackson",
+                    "gender": "Female",
+                    "major": "ICE",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302005",
+                    "name": "Peter Parker",
+                    "gender": "Male",
+                    "major": "CS",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302006",
+                    "name": "Nathan Drag",
+                    "gender": "Female",
+                    "major": "ICE",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302007",
+                    "name": "John Snow",
+                    "gender": "Male",
+                    "major": "CS",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302008",
+                    "name": "John Smith",
+                    "gender": "Female",
+                    "major": "ICE",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302009",
+                    "name": "Jane Doe",
+                    "gender": "Male",
+                    "major": "CS",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302010",
+                    "name": "Will Smith",
+                    "gender": "Female",
+                    "major": "ICE",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302011",
+                    "name": "Sam Bowl",
+                    "gender": "Male",
+                    "major": "CS",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302012",
+                    "name": "Jane Lord",
+                    "gender": "Female",
+                    "major": "ICE",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302013",
+                    "name": "Sara Conner",
+                    "gender": "Male",
+                    "major": "CS",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302014",
+                    "name": "Lady Gaga",
+                    "gender": "Female",
+                    "major": "ICE",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302015",
+                    "name": "Lionel Messi",
+                    "gender": "Male",
+                    "major": "CS",
+                    "school": "IT",
+                },
+                {
+                    "id": "6231302016",
+                    "name": "Christiano Ronaldo",
+                    "gender": "Female",
+                    "major": "ICE",
+                    "school": "IT",
+                }
+            ];
+
+            var table = $('#myTable').DataTable({
+                responsive: true,       //for responsive column display
+                deferRender: true,      //if large data, use this option
+                data: dataSet,
+                columns: [
+                    { data: "id", title: "ID" },
+                    { data: "name", title: "Name" },
+                    { data: "gender", title: "Gender" },
+                    { data: "major", title: "Major" },
+                    { data: "school", title: "School" },
+                    { title: "Action", orderable: false, defaultContent: "<button class='btn btn-danger my-1'>Delete</button> <button class='btn btn-warning my-1'>Edit</button>" }
+                ],
+                columnDefs: [
+                    // make the last column align right, also target: "_all"
+                    { "className": "dt-center", "targets": 5 }
+                ]
+            });
+
+            // Delete 
+            $('#myTable tbody').on('click', '.btn-danger', function () {
+                // read data of the selected row
+                let data = table.row($(this).parents('tr')).data();
+                for (var i = 0; i < dataSet.length; i++) {
+                    // if found, keep index i 
+                    if (dataSet[i].id == data.id) {
+                        ArrayID = i;
+                        break;
+                    }
+                };
+                //console.log(data);
+                Swal.fire({
+                    title: 'Warning',
+                    text: "Are you sure to delete " + data.id,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        dataSet.splice(ArrayID, 1);
+                        table.clear();
+                        table.rows.add(dataSet).draw();
+
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        );
+                    }
+                }
+                )
+                    ;
+            });
+
+            // Edit
+            $('#myTable tbody').on('click', '.btn-warning', function () {
+                // keep the selected row index for later use
+                rowID = table.row($(this).parents('tr')).index();
+
+                // read data of the selected row
+                let data = table.row($(this).parents('tr')).data();
+
+                // show data in modal
+                $("#txtId").val(data.id);
+                $("#txtName").val(data.name);
+                if (data.gender == "Male") {
+                    $("#radioMale").prop('checked', 'true');
+                }
+                else {
+                    $("#radioFemale").prop('checked', 'true');
+                }
+                $("#txtMajor").val(data.major);
+                $("#txtSchool").val(data.school);
+
+                // show modal
+                $("#modalEdit").modal("show");
+            });
+
+            // Edit and save
+            $("#btnSave").click(function () {
+                let id = $("#txtId").val();
+                let name = $("#txtName").val();
+                let gender = $("#radioMale").is(":checked") ? "Male" : "Female";
+                let major = $("#txtMajor").val();
+                let school = $("#txtSchool").val();
+                // console.log(id+" "+name+" "+gender+" "+major+" "+school);
+
+                //close modal
+                $("#modalEdit").modal('hide');
+
+                //get selected row and update value
+                // note that rowID is the id of selected row from the previous selection
+                let temp = table.row(rowID).data();
+                temp.name = name;
+                temp.gender = gender;
+                temp.major = major;
+                temp.school = school;
+
+                //update data table
+                table.row(rowID).data(temp).invalidate();
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h3 class="my-3">Data table</h3>
+        <div class="row mb-2" style="text-align: right;">
+            <div class="col-md-11"></div><button class="btn btn-success" id="btn_add">ADD</button>
+        </div>
+
+        <table id="myTable" class="table table-striped table-bordered" style="width:100%">
+        </table>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalEdit">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modelTitleId">Edit</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" class="form-control mb-1" id="txtId" disabled>
+                        <input type="text" class="form-control mb-1" id="txtName">
+                        <input type="radio" name="gender" id="radioMale"> Male
+                        <input type="radio" name="gender" id="radioFemale"> Female
+                        <input type="text" class="form-control my-1" id="txtMajor">
+                        <input type="text" class="form-control mb-1" id="txtSchool">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id="btnSave" type="button" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="../public/styles/bootstrap.min.css">
+    <script src="../public/script/jquery-3.5.1.min.js"></script>
+    <script src="../public/script/popper.min.js"></script>
+    <script src="../public/script/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+
+
+
+    <script>
+        var rowID;
+        $(document).ready(function () {
+            let dataSet = [
+                { "id": "6131502001", "name": "Peter Parker", "gender": "Male", "major": "ICE" },
+                { "id": "6131302001", "name": "Elona Holmes", "gender": "Female", "major": "CS" },
+            ];
+            //  data table
+            var table = $("#myTable").DataTable({
+                data: dataSet,
+                columns: [
+                    { data: "id", title: "Student ID" },
+                    { data: "name", title: "Name" },
+                    { data: "gender", title: "Gender" },
+                    { data: "major", title: "Major" },
+                    {title: "Action",defaultContent:"<button class='btn btn-danger'>Delete</button> <button class='btn btn-warning'>Edit</button>"}
+                ]
+            });
+            
+            //click Edit button
+            $("#myTable tbody").on("click", ".btn-warning",function(){
+
+                //alert("edit");
+                //  get selected data
+                const currentRow = $(this).parents("tr");
+                const data = table.row(currentRow).data();
+                rowID = table.row(currentRow).index();
+
+                //alert(data.id);
+                $("#txtID").val(data.id);
+                $("#txtName").val(data.name);
+                if(data.gender == "Male"){
+                    $("#radioMale").prop("checked" , true);
+                }
+                else{
+                    $("#radioFemale").prop("checked", true);
+                }
+                $("#txtMajor").val(data.major);
+
+                //  show edit model
+                $("#modalEdit").modal("show");
+            });
+
+            //  click Save button
+            $("#btnSaveEdit").click(function(){
+                //  get new data
+                const name = $("#txtName").val();
+                let gender = "Female";
+                if($("#radioMale").is(":checked")){
+                    gender = "Male";
+                }
+
+
+                const major = $("#txtMajor").val();
+                //alert(rowID);
+
+                dataSet[rowID].name = name;
+                dataSet[rowID].gender = gender;
+                dataSet[rowID].majoe = major;
+                
+                //  update data
+                //  1.Update to detaset
+                
+                //  2.Update datatable
+                //  window.location.reload();
+                let temp = table.row(rowID).data();
+                temp.name = name;
+                temp.gender = gender;
+                temp.major = major;
+                table.row(rowID).data(temp).invalidate();
+
+                //table.clear();
+                //table.rows.add(dataSet).draw();
+
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid pt-3">
+
+        <table id="myTable" class="table table-striped table-bordered" style="width: 100%;"></table>
+
+        
+        <!-- Modal -->
+        <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+                    <div class="modal-body" >
+                        <input type="text" id="txtID" class="form-control mb-2" disabled>
+                        <input type="text" id="txtName" class="form-control mb-2">
+                        <input type="radio" name="gender" id="radioMale">Male
+                        <input type="radio" name="gender" id="radioFemale">Female
+                        <input type="text" id="txtMajor" class="form-control mb-2">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id = "btnSaveEdit" type="button" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

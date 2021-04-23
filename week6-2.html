@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../public/styles/bootstrap.min.css">
+    <script src="../public/script/jquery-3.5.1.min.js"></script>
+    <script src="../public/script/popper.min.js"></script>
+    <script src="../public/script/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const data = [
+                {id: 1302, "name": "Computer Science", "school": "IT"},
+                {id: 1305, "name": "Software Engineering", "school": "IT"},
+                {id: 1501, "name": "Computer Engineering", "school": "IT"}
+
+            ];
+
+            let major = "<thead><tr><th>ID</th> <th>Name</th> <th>School</th></tr></thead>";
+
+            $.each(data, function (index, value) { 
+                major += "<tr><td>" + value.id + "</td> <td>" + value.name + "</td> <td>" + value.school + "</td></tr>";
+
+            });
+
+            $("#myTable").html(major);
+        });
+    </script>
+
+</head>
+<body>
+    <div class="container-fluid">
+        <table class="table table-striped mt-2" id="myTable">
+        </table>
+    </div>
+</body>
+</html>
